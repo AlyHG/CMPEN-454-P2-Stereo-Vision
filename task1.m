@@ -1,0 +1,42 @@
+load 'Parameters_V1_1.mat'
+load 'Parameters_V2_1.mat'
+load 'mocapPoints3D.mat'
+
+% get the matrix of pixel coordinates converted from world coordinates
+%currently not properly creating a matrix of pixel coordinates
+Pmat = Parameters.Pmat;
+Kmat = Parameters.Kmat;
+Rmat = Parameters.Rmat;
+t = Pmat(1:3, 4);,
+
+Pmat_padded = [Pmat; zeros(1,3) ones(1,1)];
+
+zero_col = zeros(size(Kmat,1),1);
+Kmat_adjusted = [Kmat, zero_col];
+
+pts3D_worldpoint = [pts3D; ones(1,39)];
+
+
+for i = 1:size(pts3D,2)
+    disp(i);
+    pixel_coords_math = Kmat * Pmat * pts3D_worldpoint(:,i);
+    resultIm1 = pixel_coords_math(:)/pixel_coords_math(3,1);
+end
+
+for i = 1:size(pts3D,2)
+    disp(i);
+    pixel_coords_math = Kmat * Pmat * pts3D_worldpoint(:,i);
+    resultIm2 = pixel_coords_math(:)/pixel_coords_math(3,1);
+end
+
+im1corrected = imread("im1corrected.jpg");
+im2corrected = imread("im2corrected.jpg");
+
+show_im1 = imshow(im1corrected);
+show_im2 = imshow(im2corrected);
+
+hold on;
+for j = 1:size(pts3D,2)
+    scatter(pixel_coords(1,j),pixel_coords(2,j));
+end
+hold off;
