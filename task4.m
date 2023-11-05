@@ -1,6 +1,7 @@
+% Load the image correspondences
 load 'Task3_pixel_coords.mat'
 
-% Read images
+% Read the images
 img1 = imread('im1corrected.jpg');
 img2 = imread('im2corrected.jpg');
 
@@ -8,8 +9,57 @@ img2 = imread('im2corrected.jpg');
 points_img1 = [floor_1; Door_1; Wall_1];
 points_img2 = [floor_2; Door_2; Wall_2];
 
-% Estimate the Fundamental Matrix
-[F, inliers] = estimateFundamentalMatrix(points_img1, points_img2, 'Method', 'Norm8Point');
+% % Estimate the Fundamental Matrix
+% [F, inliers] = estimateFundamentalMatrix(points_img1, points_img2, 'Method', 'Norm8Point');
+
+
+% --- Begin: Eight-Point Algorithm for Fundamental Matrix ---
+
+% Extract the x and y coordinates from the image points
+x1 = points_img1(:, 1);
+y1 = points_img1(:, 2);
+x2 = points_img2(:, 1);
+y2 = points_img2(:, 2);
+
+% Hartley Preconditioning
+% Calculate the mean and standard deviation for the points in the first image
+mux = mean(x1);
+muy = mean(y1);
+stdxy = (std(x1) + std(y1)) / 2;
+
+% Define a transformation matrix T1 based on the mean and standard deviation
+T1 = [1 0 -mux; 0 1 -muy; 0 0 stdxy] / stdxy;
+
+% Normalize the points in the first image
+nx1 = (x1 - mux) / stdxy;
+ny1 = (y1 - muy) / stdxy;
+
+% Repeat the above normalization process for the points in the second image
+mux = mean(x2);
+muy = mean(y2);
+stdxy = (std(x2) + std(y2)) / 2;
+T2 = [1 0 -mux; 0 1 -muy; 0 0 stdxy] / stdxy;
+nx2 = (x2 - mux) / stdxy;
+ny2 = (y2 - muy) / stdxy;
+
+% Construct the matrix A, based on the normalized points
+A = [];
+for i=1:length(nx1)
+    A(i,:) = [nx1(i)*nx2(i) nx1(i)*ny2(i) nx1(i) ny1(i)*nx2(i) ny1(i)*ny2(i) ny1(i) nx2(i) ny2(i) 1];
+end
+
+% Calculate the Fundamental Matrix F from A using the smallest eigenvalue
+[u,d] = eigs(A' * A,1,'SM');
+F = reshape(u,3,3);
+
+% Enforce a rank-2 constraint on F. This is because the Fundamental matrix is inherently rank-2
+[U,D,V] = svd(F);
+D(3,3) = 0;
+F = U * D * V';
+
+% Undo the normalization to obtain the actual Fundamental matrix
+F = T2' * F * T1;
+% --- End:  Eight-Point Algorithm for Fundamental Matrix ---
 
 % Display the epipolar lines in the first image
 figure, imshow(img1);

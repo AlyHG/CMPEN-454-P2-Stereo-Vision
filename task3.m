@@ -1,3 +1,6 @@
+% Must Run Task 1 First to get necessary variables
+run("task1.m")
+
 ProjectionMatrix_1 = Kmat_im1*Pmat_im1;
 ProjectionMatrix_2 = Kmat_im2*Pmat_im2;
 
@@ -9,8 +12,9 @@ load 'Task3_pixel_coords.mat'
 %title('Select the corresponding 3 points on the floor in the second image.');
 %floor_2 = ginput(3);  % Select the same 3 points in the second image.
 
-Floor3D = triangulate(floor_1, floor_2, ProjectionMatrix_1, ProjectionMatrix_2);
+%Floor3D = triangulate(floor_1, floor_2, ProjectionMatrix_1, ProjectionMatrix_2);
 
+Floor3D = triangulate_function(floor_1, floor_2,Rmat_im1, Rmat_im2, t_im1, t_im2, Kmat_im1, Kmat_im2);
 % Compute Floor plane from three 3D points
 Floor_vec1 = Floor3D(2,:) - Floor3D(1,:);
 Floor_vec2 = Floor3D(3,:) - Floor3D(1,:);
@@ -29,8 +33,9 @@ disp(['Floor Plane equation: ', num2str(Floor_normal(1)), '*x + ', num2str(Floor
 % title('Select the corresponding 3 points on the Wall in the second image.');
 % Wall_2 = ginput(3);  % Select the same 3 points in the second image.
 
-Wall3D = triangulate(Wall_1, Wall_2, ProjectionMatrix_1, ProjectionMatrix_2);
+%Wall3D = triangulate(Wall_1, Wall_2, ProjectionMatrix_1, ProjectionMatrix_2);
 
+Wall3D = triangulate_function(Wall_1, Wall_2, Rmat_im1, Rmat_im2, t_im1, t_im2, Kmat_im1, Kmat_im2);
 % Compute Wall plane from three 3D points
 Wall_vec1 = Wall3D(2,:) - Wall3D(1,:);
 Wall_vec2 = Wall3D(3,:) - Wall3D(1,:);
@@ -48,7 +53,8 @@ disp(['Wall Plane equation: ', num2str(Wall_normal(1)), '*x + ', num2str(Wall_no
 % title('Select the center of the camera in the first image.');
 % camera_2 = ginput(1);
 
-Camera3D = triangulate(camera_1, camera_2, ProjectionMatrix_1, ProjectionMatrix_2);
+%Camera3D = triangulate(camera_1, camera_2, ProjectionMatrix_1, ProjectionMatrix_2);
+Camera3D = triangulate_function(camera_1, camera_2, Rmat_im1, Rmat_im2, t_im1, t_im2, Kmat_im1, Kmat_im2);
 disp(['3D location of the camera center: [', num2str(Camera3D), ']']);
 
 
@@ -59,7 +65,8 @@ disp(['3D location of the camera center: [', num2str(Camera3D), ']']);
 % title('Select the corresponding bottom THEN Top points of the Person in Image.');
 % Person_2 = ginput(2);
 
-Person3D = triangulate(Person_1, Person_2, ProjectionMatrix_1, ProjectionMatrix_2);
+%Person3D = triangulate(Person_1, Person_2, ProjectionMatrix_1, ProjectionMatrix_2);
+Person3D = triangulate_function(Person_1, Person_2, Rmat_im1, Rmat_im2, t_im1, t_im2, Kmat_im1, Kmat_im2);
 Person_height = abs(Person3D(2,3) - Person3D(1,3));
 disp(['Height of Person: ', num2str(Person_height), ' mm']);
 
@@ -70,6 +77,7 @@ disp(['Height of Person: ', num2str(Person_height), ' mm']);
 % title('Select the corresponding bottom THEN Top points of the Doorway in Image.');
 % Door_2 = ginput(2);
 
-Door3D = triangulate(Door_1, Door_2, ProjectionMatrix_1, ProjectionMatrix_2);
+%Door3D = triangulate(Door_1, Door_2, ProjectionMatrix_1, ProjectionMatrix_2);
+Door3D = triangulate_function(Door_1, Door_2, Rmat_im1, Rmat_im2, t_im1, t_im2, Kmat_im1, Kmat_im2);
 Door_height = abs(Door3D(2,3) - Door3D(1,3));
 disp(['Height of Doorway: ', num2str(Door_height), ' mm']);

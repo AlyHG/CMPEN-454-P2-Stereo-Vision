@@ -1,4 +1,5 @@
 %Run Task 1 first to get the necessary variables
+run("task1.m")
 
 R_im1_transpose = transpose(Rmat_im1);
 R_im2_transpose = transpose(Rmat_im2);
