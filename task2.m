@@ -59,6 +59,8 @@ end
 % observed and given coordinates.
 World_coord_diff = P_w_matrix - pts3D_worldpoint;
 World_coord_diff_squared = World_coord_diff.^2;
-n = 2*size(pts3D);
+n = 3*size(pts3D, 2);   % 3 coordinates per point size(pts3D, 2) = # of columns = 39 hence 3*39
 World_sum = sum(World_coord_diff_squared, 'all');
-MeanSquaredError = World_sum./n 
+MeanSquaredError = World_sum./n;
+display(['Mean Squared Error = ', num2str(MeanSquaredError)]);
+

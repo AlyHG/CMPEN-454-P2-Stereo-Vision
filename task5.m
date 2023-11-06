@@ -1,6 +1,7 @@
 load 'Task3_pixel_coords.mat';
-run('task4.m')  % To load necessary variables
-run('task1.m')
+
+% run('task4.m')  % To load necessary variables
+% run('task1.m')
 
 % Fundamental Matrix already computed in Task 4
 
@@ -33,6 +34,7 @@ for i = 1:num_points
     distances(i) = d2_1 + d2_2;
 end
 
+
 % Compute the mean of the squared distances
 mean_distance = mean(distances);
-disp(['Mean Symmetric Epipolar Distance: ', num2str(mean_distance)]);
+disp([newline,'Mean Symmetric Epipolar Distance: ', num2str(mean_distance)]);
